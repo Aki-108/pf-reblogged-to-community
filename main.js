@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Reblogged to Community
-// @version      1.0
+// @version      1.1
 // @description  Shows where a post has been reblogged to.
 // @author       aki108
 // @match        http*://www.pillowfort.social/posts/*
@@ -108,7 +108,7 @@
             return value[0] == commId;
         });
         if (comm.length > 0) {
-            reblog.innerHTML += " to <a href='" + comm[0][1] + "'>" + comm[0][1] + "</a>";
+            reblog.innerHTML += " to <a href='https://www.pillowfort.social/community/" + comm[0][1] + "'>" + comm[0][1] + "</a>";
         } else {
             commByPost(reblog);
         }
