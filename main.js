@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Reblogged to Community
-// @version      1.1
+// @version      1.2
 // @description  Shows where a post has been reblogged to.
 // @author       aki108
 // @match        http*://www.pillowfort.social/posts/*
@@ -28,7 +28,7 @@
     }
 
     let reblogJSON;
-    $.getJSON(document.URL+'/reblogs/', function(data) {
+    $.getJSON(document.URL.split("?")[0]+'/reblogs/', function(data) {
         reblogJSON = data;
     });
 
