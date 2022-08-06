@@ -1,30 +1,34 @@
 // ==UserScript==
 // @name         Reblogged to Community
-// @version      1.2
+// @version      1.3
 // @description  Shows where a post has been reblogged to.
 // @author       aki108
 // @match        http*://www.pillowfort.social/posts/*
-// @icon         https://www.google.com/s2/favicons?domain=pillowfort.social
+// @icon         https://www.pillowfort.social/assets/favicon/Favicon%202%20-%20Dark%20Blue@3x-d11c16147c2ce6136e0925765773e734b35102fe045adf98f1d9cf71040d8d05.png
 // @grant        none
 // ==/UserScript==
 
 (function() {
     'use strict';
 
-    var observer = new MutationObserver(function(mutations) {
+    /* Initialize. When the loading circle disapears, a click event gets added to the "Reblogs" button. */
+    var styleObserver = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutationRecord) {
-            if (target2 != null && target2.style.display == "none") {
+            if (loadingIndicator != null && loadingIndicator.style.display == "none") {
                 addEventListener();
             }
         });
     });
-    var target2 = document.getElementById("comments_loading");
-    if (target2 != null) {
-        console.log("comments found");
-        observer.observe(target2, {
+    var loadingIndicator = document.getElementById("comments_loading");
+    if (loadingIndicator != null) {
+        styleObserver.observe(loadingIndicator, {
             attributes: true,
             attributeFilter: ["style"],
         });
+    }
+    function addEventListener() {
+        let reblogButton = document.getElementsByClassName("nav-tabs")[0].children[1];
+        reblogButton.addEventListener("click", run);
     }
 
     let reblogJSON;
@@ -32,6 +36,7 @@
         reblogJSON = data;
     });
 
+    /* Cache of communities with most members. */
     let comms = []
     comms.push([3, "BetaUsers"]);
     comms.push([37, "PillowArtists"]);
@@ -84,20 +89,18 @@
     comms.push([132, "LewdDraws"]);
     comms.push([455, "Queer"]);
 
+    /* Collect post IDs when "Reblogs" button is clicked. */
     function run() {
         let reblogButton = document.getElementsByClassName("nav-tabs")[0].children[1];
         reblogButton.removeEventListener("click", run);
 
-        let notes = document.getElementsByClassName("reblog-note");
-        let reblogs = [];
+        let notes = document.getElementById("reblogs").getElementsByClassName("reblog-note");
         for (let note of notes) {
-            reblogs.push(note.getElementsByTagName("a")[1]);
-        }
-        for (let reblog of reblogs) {
-            findComm(reblog);
+            findComm(note.getElementsByTagName("a")[1]);
         }
     }
 
+    /* Match a community from cache with the reblog. */
     function findComm(reblog) {
         let postId = reblog.href.substring(reblog.href.search("/posts/")+7);
         let commId = reblogJSON.filter(function(value){
@@ -108,23 +111,19 @@
             return value[0] == commId;
         });
         if (comm.length > 0) {
-            reblog.innerHTML += " to <a href='https://www.pillowfort.social/community/" + comm[0][1] + "'>" + comm[0][1] + "</a>";
+            reblog.outerHTML += " to <a href='https://www.pillowfort.social/community/" + comm[0][1] + "'>" + comm[0][1] + "</a>";
         } else {
             commByPost(reblog);
         }
     }
 
+    /* When a community isn't in the cache, it is requested from the Pillowfort server.*/
     function commByPost(reblog) {
         let postId = reblog.href.substring(reblog.href.search("/posts/")+7);
         $.getJSON('https://www.pillowfort.social/posts/'+postId+'/json', function(data) {
-            reblog.innerHTML += " to <a href='https://www.pillowfort.social/community/" + data.comm_name + "'>" + data.comm_name + "</a>";
+            reblog.outerHTML += " to <a href='https://www.pillowfort.social/community/" + data.comm_name + "'>" + data.comm_name + "</a>";
+        }).fail(function(value) {
+            reblog.outerHTML += " to <abbr title='" + value.statusText + "'>???</abbr>";
         });
-    }
-
-    function addEventListener() {
-        /*let body = document.getElementsByTagName("body")[0];
-        body.addEventListener("mouseenter", run);*/
-        let reblogButton = document.getElementsByClassName("nav-tabs")[0].children[1];
-        reblogButton.addEventListener("click", run);
     }
 })();
