@@ -5,6 +5,7 @@
 // @author       aki108
 // @match        http*://www.pillowfort.social/posts/*
 // @icon         https://www.pillowfort.social/assets/favicon/Favicon%202%20-%20Dark%20Blue@3x-d11c16147c2ce6136e0925765773e734b35102fe045adf98f1d9cf71040d8d05.png
+// @updateURL    https://raw.githubusercontent.com/Aki-108/pf-reblogged-to-community/main/main.js
 // @grant        none
 // ==/UserScript==
 
