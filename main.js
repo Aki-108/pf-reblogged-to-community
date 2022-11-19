@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Reblogged to Community
-// @version      1.3
+// @version      1.4
 // @description  Shows where a post has been reblogged to.
 // @author       aki108
 // @match        http*://www.pillowfort.social/posts/*
@@ -34,7 +34,7 @@
     }
 
     let reblogJSON;
-    $.getJSON(document.URL.split("?")[0]+'/reblogs/', function(data) {
+    $.getJSON(document.URL.split("?")[0]+'/reblogs?p=1', function(data) {
         reblogJSON = data;
     });
 
@@ -105,7 +105,7 @@
     /* Match a community from cache with the reblog. */
     function findComm(reblog) {
         let postId = reblog.href.substring(reblog.href.search("/posts/")+7);
-        let commId = reblogJSON.filter(function(value){
+        let commId = Object.values(reblogJSON)[0].filter(function(value){
             return value.id == postId;
         })[0].community_id;
         if (commId == null) return;
