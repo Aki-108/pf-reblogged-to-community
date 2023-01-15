@@ -1,3 +1,5 @@
+**⚠ Notice**: This extension is no longer supported. Reblogged To Community is now part of Tassel. Use [Tassel](https://github.com/Aki-108/Tassel) instead.
+
 # pf-reblogged-to-community
 This is an extension to [pillowfort.social](https://www.pillowfort.social/). It shows the communities a post has been reblogged to and where it's been liked.
 
