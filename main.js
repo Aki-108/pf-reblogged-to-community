@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Reblogged to Community
-// @version      2.0
+// @version      2.1
 // @description  Shows where a post has been liked/reblogged to.
 // @author       aki108
 // @match        http*://www.pillowfort.social/posts/*
@@ -13,6 +13,21 @@
 
 (function() {
     'use strict';
+    
+    /* Tassel Notice */
+    if (!document.getElementById("tasselModalSidebar") && localStorage.getItem("tasselUpdateNotice") == null) {
+        let toast = document.createElement("div");
+        toast.style = "height:max-content;max-width:230px;position:fixed;bottom:0;right:0;margin:20px;font-size:14px;box-shadow:0 0 5px 0 black;background:var(--postBgColor);color:var(--postFontColor);padding:10px;border-top:5px var(--linkColor) solid;cursor:pointer;line-height:1.2em;";
+        toast.innerHTML = `
+        <h6 style="font-weight:bold;line-height:1em;margin-bottom:4px;">Notice</h6>
+        <span>Reblogged to Community is no longer supported as a stand-alone extension. It is now part of the extension manager Tassel. Please install Tassel to use Reblogged to Community in the future.<br>Learn more by clicking this message.</span>
+        `;
+        toast.addEventListener("click", function() {
+            localStorage.setItem("tasselUpdateNotice", 0);
+            window.open("https://www.pillowfort.social/posts/3126084", '_blank');
+        });
+        document.body.appendChild(toast);
+    }
 
     /* Wait for the page to load before initializing the script. */
     waitForKeyElements("#post-comments-section", addEventListener);
